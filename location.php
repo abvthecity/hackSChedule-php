@@ -26,7 +26,7 @@ function locationTime($building_1, $building_2){
 	
 	$mhp=array('3','RRB','LIS','OCW','LHI','SHS','CEM','SCI','HAR','MHP');
 	$parkside=array('4','SGM','GFS','HNB','KAP','MCB','CWT','CWO','HRC','DRB','OHE',
-		'BHE','VHE','HED','PCE','RTH','SSC','SSL','EEB','SAL','PHE');
+		'BHE','VHE','HED','PCE','RTH','SSC','SSL','EEB','SAL','PHE','SAL');
 	$law=array('5','AHF','ACC','BRI','HOH','LAW','RGL','SAS','JKP');
 
 	$map=array($humanities,$vkc,$parkside,$mhp,$law);
