@@ -4,7 +4,7 @@ include 'func/db.php';
 include 'func/generator.php';
 include 'func/functions.php';
 
-$courselist = array("CSCI-170","CSCI-104L");
+$courselist = array("CSCI-170","CSCI-104L","MATH-226");
 
 $masterarr = array();
 
@@ -14,7 +14,6 @@ function addMaster($array, &$master){
 
 
 function coursemerge($courselist, $index, $array, &$masterarr, $conn){
-	echo $index;
 	$next = generator($courselist[$index+1], $conn);
 	foreach($array as $com){
 		foreach($next as $com2){
@@ -26,18 +25,20 @@ function coursemerge($courselist, $index, $array, &$masterarr, $conn){
 					//if($newArr[$i]->conflictBool($newArr[$j])) $conflict = true;
 
 			if(!$conflict){
-				if($index < count($courselist))
+				if($index < count($courselist)){
 					coursemerge($courselist, $index+1, $newArr, $masterarr, $conn);
+				}
 				else addMaster($newArr, $masterarr);
 			}
-			else break;
 		}
 	}
 }
 
 coursemerge($courselist, 0, generator($courselist[0], $conn), $masterarr, $conn);
 
-print_r($masterarr);
+//print_r($masterarr);
+
+
 /*
 coursemerge(array(),$courselist[0],0);
 
