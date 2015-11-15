@@ -4,27 +4,31 @@
 //include 'functions.php';
 
 function convertToMin($time){
-	$hours = explode(":",$time)[0];
-	$minutes = explode(":",$time)[1];
-	if(strpos($minutes,"am")){
-		$minutes = str_replace("am","",$minutes);
+	$timea = explode(":",$time);
+	$timeo = 0;
+	if(strpos($time,"am")){
+		$timeo = str_replace("am","",$timea[1]);
+		if($timea[0] == 12) $timea[0] = 0;
 	}
-	else if(strpos($minutes,"pm")){
-		$minutes = str_replace("pm","",$minutes);
-		if($hours != 12) $hours += 12;
+	else if(strpos($time,"pm")){
+		$timeo = str_replace("pm","",$timea[1]);
+		if($timea[0] != 12) $timea[0] += 12;
 	}
-	return ($hours*60) + $minutes;
+
+	return $timea[0]*60+(int)$timeo;
 }
 
 // ASSUME t12 > t11, t22 > t21
 function checkConflict($t1_start,$t1_end,$t2_start,$t2_end){
-	if(convertToMin($t1_start) < convertToMin($t2_start))
-		if(convertToMin($t1_end) > convertToMin($t2_start))
-			return true;
-		else
-			return false;
-	else
-		checkConflict($t2_start,$t2_end,$t1_start,$t1_end);
+	if($t1_start == '' || $t1_end == '' || $t2_start == '' || $t2_end == '') return true; 
+	//echo $t1_start." ".$t2_start."<br>";
+
+	if(strtotime($t1_start) < strtotime($t2_start)){
+		if(strtotime($t1_end) > strtotime($t2_start)) return true;
+		else return false;
+	}
+	else if(strtotime($t1_start) == strtotime($t2_start)) return true;
+	//else !checkConflict($t2_start,$t2_end,$t1_start,$t1_end);
 }
 
 class Section {
@@ -37,9 +41,11 @@ class Section {
 	public $days;
 	public $instructor;
 	public $room;
+	public $units;
 
 	public function conflictBool($s){
-		return checkConflict($time_start, $time_end, $s->time_start, $s->time_end);
+		//echo $this->time_start." ".$this->time_end." ".$s->time_start." ".$s->time_end."<br>";
+		return checkConflict($this->time_start, $this->time_end, $s->time_start, $s->time_end);
 	}
 }
 
@@ -69,6 +75,10 @@ if($result->num_rows > 0){
 		$obj->days = $row["days"];
 		$obj->instructor = $row["instructor"];
 		$obj->room = $row["room"];
+		$result2 = $conn->query("SELECT * FROM classes WHERE course='$class'");
+		while($row2 = $result2->fetch_assoc()){
+			$obj->units = $row2["units"];
+		}
 		$type[] = $obj->type;
 		$id[] = $obj->id;
 		$den[] = ($obj->room == "DEN@Viterbi") ? true : false;

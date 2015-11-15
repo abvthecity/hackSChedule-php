@@ -60,8 +60,8 @@ function insertSection($class_id,$theme,$type,$section,$time_start,$time_end,$da
 	$instructor = addslashes($instructor);
 	$theme = addslashes($theme);
 	if(!(strpos($time_start,"am") || strpos($time_start,"pm"))){
-		if(strpos($time_end,"pm")) $time_start=$time_start."pm";
-		else if(strpos($time_end, "am")) $time_start=$time_start."am";
+		if(strpos($time_end,"pm") && (explode(":",$time_start)[0]<9 || explode(":",$time_start)[0]==12)) $time_start=$time_start."pm";
+		else if(strpos($time_end, "am") || strpos($time_end, "pm")) $time_start=$time_start."am";
 	}
 	$query = "INSERT INTO section (id, class_id, theme, type, section, time_start, time_end, days, instructor, room) VALUES ('', '$class_id', '$theme', '$type', '$section', '$time_start', '$time_end', '".formatDate($days)."', '$instructor', '$room')";
 	$query2 = "SELECT * FROM section WHERE section='$section' AND class_id='$class_id'";
