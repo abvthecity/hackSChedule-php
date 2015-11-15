@@ -20,6 +20,23 @@ function check($con1, $con2){
 	}
 	return 1;
 }
+//check using user preferences
+//$time: 9,10,11,12
+//days is an array in the style "M T W Th F S"
+function checkPref($con1, $con2,$time,$days){
+	foreach ($con1 as $a) {
+		if($a->time_start>$time){
+			return 0;
+		}
+		//checks required days with days in classes
+		foreach(str_split($a->days) as $day){
+			foreach(str_split($days) as $day2){
+				if($day == $day2)return 0;
+			}
+		}
+	}
+	return 1;
+}
 
 
 $queue = array();
