@@ -17,11 +17,11 @@ function convertToMin($time){
 
 // ASSUME t12 > t11, t22 > t21
 function checkConflict($t1_start,$t1_end,$t2_start,$t2_end){
-	if(convertToMin($t1_start) >= convertToMin($t2_start))
-		if(convertToMin($t2_end) > convertToMin($t1_start))
-			return false;
-		else
+	if(convertToMin($t1_start) < convertToMin($t2_start))
+		if(convertToMin($t1_end) > convertToMin($t2_start))
 			return true;
+		else
+			return false;
 	else
 		checkConflict($t2_start,$t2_end,$t1_start,$t1_end);
 }
