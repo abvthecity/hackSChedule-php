@@ -3,7 +3,9 @@
 //include 'func/db.php';
 //include 'func/generator.php';
 
-function coursematch($courselist, $conn){
+function coursematch($courselist,$num,$darr, $conn){
+
+if(empty($courselist)) return array();
 
 $masterarr = array();
 
@@ -25,13 +27,24 @@ function check($con1, $con2){
 //days is an array in the style "M T W Th F S"
 function checkPref($con1, $con2,$time,$days){
 	foreach ($con1 as $a) {
-		if($a->time_start>$time){
+		if(convertToMin($a->time_start)<$time*60){
 			return 0;
 		}
 		//checks required days with days in classes
 		foreach(str_split($a->days) as $day){
 			foreach(str_split($days) as $day2){
-				if($day == $day2)return 0;
+				if($day == $day2) return 0;
+			}
+		}
+	}
+	foreach ($con2 as $b) {
+		if(convertToMin($b->time_start)<$time*60){
+			return 0;
+		}
+		//checks required days with days in classes
+		foreach(str_split($b->days) as $day){
+			foreach(str_split($days) as $day2){
+				if($day == $day2) return 0;
 			}
 		}
 	}
@@ -55,7 +68,7 @@ while(!empty($queue)){
 			foreach($queue[0] as $con1){
 				array_shift($queue);
 				foreach($curr as $con2){
-					if(check($con1,$con2)){
+					if(check($con1,$con2) && checkPref($con1,$con2,$num,$darr)){
 						$newArr=array();
 						foreach($con1 as $elem1) { $newArr[] = $elem1; }
 						foreach($con2 as $elem2) { $newArr[] = $elem2; }

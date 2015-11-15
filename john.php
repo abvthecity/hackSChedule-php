@@ -6,7 +6,7 @@ include 'func/db.php';
 include 'func/generator.php';
 include 'coursematch.php';
 
-$courselist = array("BUAD-306","BUAD-302","PHYS-151Lg","CSCI-270");
+$courselist = array("BUAD-306","BUAD-302","PHYS-151Lg","BISC-220Lg");
 
 $coursematch = coursematch($courselist, $conn);
 

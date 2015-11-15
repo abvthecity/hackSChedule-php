@@ -16,10 +16,10 @@
 	<ul id="dynamicInput" class="typeahead">
 		<li><input type="text" id="classInput" name="class-1" placeholder="Enter a class"/><p>Hit enter to add a new class.</p></li>
 	</ul>
-	<input class="btn" type="button" value="Next" onclick="$('#filtercontainer').show();">
+	<!--<input class="btn" type="button" value="Next" onclick="$('#filtercontainer').show();">-->
 </section>
 
-<section id="filtercontainer">
+<section id="filtercontainer" style="display:block;">
 	<h4>Optimize Schedule</h4>
 	<div>
 		<b>I don't want classes before: </b>
@@ -155,7 +155,10 @@ $('#dynamicInput input[type=text]').typeahead({highlight:true}, {
 // ADD COURSE
 
 var arrClass = [];
-var maxClasses = 9;
+var maxClasses = 6;
+
+var num = 9;
+var darr = "";
 
 function addCourse(){
 	//var thisparent = $("#class-li-"+counter);
@@ -184,6 +187,8 @@ function addCourse(){
 					'json'
 				);
 
+				populateCal(num, darr, arrClass);
+
 				newdiv.html("<b>"+ggval+"</b> <a>[x]</a> <input type=\"hidden\" name=\"class\" value=\""+ggval+"\">");
 				newdiv.append(getString);
 
@@ -194,7 +199,50 @@ function addCourse(){
 			}
 		},'json');
 	}
+
 }
+
+function populateCal(num, darr, array){
+	$(".dna").remove();
+	//alert(array);
+	$.get(
+		'/optimized.php',
+		{time:num,days:darr,"courselist[]":array},
+		function(result){
+			for(var key in result){
+				if(key == 1){
+					for(var c in result[key]){
+						var tr = $(document.createElement('tr'));
+						var html = "<td colspan=7><b>"+result[key][c]["class_id"]+"</b> "+result[key][c]["title"]+"</td>";
+						for(var i=0;i<result[key][c]["days"].length;i++){
+							var put = result[key][c]["days"].charAt(i);
+							if(result[key][c]["days"].charAt(i) == "" || result[key][c]["time_start"] == "") put = 'A';
+							var html = "<li class=\"event dna\" data-class=\""+result[key][c]["class_id"]+"\" style=\"top:"+result[key][c]["top"]+"px;background-color:#"+result[key][c]["color"]+";min-height:"+result[key][c]["size"]+"px\"><span><i>"+result[key][c]["type"]+"</i><br><b>"+result[key][c]["class_id"]+"</b></span><p>"+((result[key][c]["instructor"] !="")?result[key][c]["instructor"]+"<br>":"") + ((result[key][c]["room"] !="")?result[key][c]["room"] + "<br>" : "") + result[key][c]["section"]+((result[key][c]["time_start"] != "")?"<br>"+result[key][c]["time_start"]+"-"+result[key][c]["time_end"]:"")+"</p></li>";
+							$(".cal-col#"+put).prepend(html);
+						}
+						var tr2 = $(document.createElement('tr'));
+						var html = "<td>"+result[key][c]["section"]+"</td><td>"+result[key][c]["type"]+"</td><td>"+result[key][c]["units"]+"</td><td>"+result[key][c]["time_start"]+"-"+result[key][c]["time_end"]+"</td><td>"+result[key][c]["days"]+"</td><td>"+result[key][c]["instructor"]+"</td><td>"+result[key][c]["room"]+"</td>";
+					}
+					//var textNode = getString.append("<input type=\"checkbox\" id=\""+ggval+"-"+key+"\" checked><label for=\""+ggval+"-"+key+"\">"+result[key]+"</label>");
+				}
+			}
+
+			$("ul.cal-col > li.event").mouseenter(function(e){
+				data_class = $(this).attr("data-class");
+				$("ul.cal-col > li.event[data-class=" + data_class + "]").addClass("hover");
+			}).mouseleave(function(e){
+				data_class = $(this).attr("data-class");
+				$("ul.cal-col > li.event[data-class=" + data_class + "]").removeClass("hover superhover");
+			}).mousedown(function(e){
+				$(this).toggleClass("superhover");
+			});
+		},
+		'json'
+	);
+}
+
+
+populateCal(num, darr, arrClass);
 
 
 $("ul#dynamicInput > li").on("keyup","input",function(e){
@@ -211,42 +259,8 @@ $("ul#dynamicInput").on("click","a",function(){
 	if(arrClass.length < maxClasses){
 		$("#dynamicInput > li").last().show();
 	}
+	populateCal(num, darr, arrClass);
 });
-
-$.get(
-	'/optimized.php',
-	function(result){
-		for(var key in result){
-			if(key == 100){
-				//alert("hi");
-				for(var c in result[key]){
-					var tr = $(document.createElement('tr'));
-					var html = "<td colspan=7><b>"+result[key][c]["class_id"]+"</b> "+result[key][c]["title"]+"</td>";
-					for(var i=0;i<result[key][c]["days"].length;i++){
-						var put = result[key][c]["days"].charAt(i);
-						if(result[key][c]["days"].charAt(i) == "" || result[key][c]["time_start"] == "") put = 'A';
-						var html = "<li class=\"event\" data-class=\""+result[key][c]["class_id"]+"\" style=\"top:"+result[key][c]["top"]+"px;background-color:#"+result[key][c]["color"]+";min-height:"+result[key][c]["size"]+"px\"><span><i>"+result[key][c]["type"]+"</i><br><b>"+result[key][c]["class_id"]+"</b></span><p>"+((result[key][c]["instructor"] !="")?result[key][c]["instructor"]+"<br>":"") + ((result[key][c]["room"] !="")?result[key][c]["room"] + "<br>" : "") + result[key][c]["section"]+((result[key][c]["time_start"] != "")?"<br>"+result[key][c]["time_start"]+"-"+result[key][c]["time_end"]:"")+"</p></li>";
-						$(".cal-col#"+put).prepend(html);
-					}
-					var tr2 = $(document.createElement('tr'));
-					var html = "<td>"+result[key][c]["section"]+"</td><td>"+result[key][c]["type"]+"</td><td>"+result[key][c]["units"]+"</td><td>"+result[key][c]["time_start"]+"-"+result[key][c]["time_end"]+"</td><td>"+result[key][c]["days"]+"</td><td>"+result[key][c]["instructor"]+"</td><td>"+result[key][c]["room"]+"</td>";
-				}
-				//var textNode = getString.append("<input type=\"checkbox\" id=\""+ggval+"-"+key+"\" checked><label for=\""+ggval+"-"+key+"\">"+result[key]+"</label>");
-			}
-		}
-
-		$("ul.cal-col > li.event").mouseenter(function(e){
-			data_class = $(this).attr("data-class");
-			$("ul.cal-col > li.event[data-class=" + data_class + "]").addClass("hover");
-		}).mouseleave(function(e){
-			data_class = $(this).attr("data-class");
-			$("ul.cal-col > li.event[data-class=" + data_class + "]").removeClass("hover superhover");
-		}).mousedown(function(e){
-			$(this).toggleClass("superhover");
-		});
-	},
-	'json'
-);
 
 
 

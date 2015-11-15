@@ -8,9 +8,14 @@ include 'func/db.php';
 include 'func/generator.php';
 include 'coursematch.php';
 
-$courselist = array("CSCI-170","CSCI-104L","MATH-225");
+$num = $_REQUEST["time"];
+$darr = $_REQUEST["days"];
+/*$num = 8;
+$darr = "";
+$courselist = array("CSCI-109");*/
+$courselist = $_REQUEST["courselist"];
 
-$coursematch = coursematch($courselist, $conn);
+$coursematch = coursematch($courselist,$num,$darr, $conn);
 
 $colorarr = array("EF5350","AB47BC","5C6BC0","039BE5","009688","689F38","EF6C00","795548","EC407A");
 
