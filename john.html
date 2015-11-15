@@ -28,17 +28,17 @@
 			<input type="radio" id="10am" name="class" value="10"/><label for="10am">10am</label>
 			<input type="radio" id="11am" name="class" value="11"/><label for="11am">11am</label>
 			<input type="radio" id="12am" name="class" value="12"/><label for="12am">12am</label>
-			<input type="radio" id="idc" name="class" value="idc" checked><label for="idc">I don't care</label>
+			<input type="radio" id="idc" name="class" value="0" checked><label for="idc">I don't care</label>
 		</p>
 	</div>
 	<div>
 		<b>I don't want classes on these days: </b>
 		<p>
-			<input type="checkbox" id="mon" name="filter" value="mon"/><label for="mon">Monday</label>
-			<input type="checkbox" id="tue" name="filter" value="tue"/><label for="tue">Tuesday</label>
-			<input type="checkbox" id="wed" name="filter" value="wed"/><label for="wed">Wednesday</label>
-			<input type="checkbox" id="thu" name="filter" value="thu"/><label for="thu">Thursday</label>
-			<input type="checkbox" id="fri" name="filter" value="fri"/><label for="fri">Friday</label>
+			<input type="checkbox" id="M" name="filter" value="mon"/><label for="M">Monday</label>
+			<input type="checkbox" id="T" name="filter" value="tue"/><label for="T">Tuesday</label>
+			<input type="checkbox" id="W" name="filter" value="wed"/><label for="W">Wednesday</label>
+			<input type="checkbox" id="H" name="filter" value="thu"/><label for="H">Thursday</label>
+			<input type="checkbox" id="F" name="filter" value="fri"/><label for="F">Friday</label>
 		</p>
 	</div>
 	<div>
@@ -160,6 +160,22 @@ var maxClasses = 6;
 var num = 9;
 var darr = "";
 
+$("input[name=filter]").click(function(e){
+	var test = $(this).attr('id');
+	if(darr.indexOf(test) >= 0){
+		darr = darr.replace(test,"");
+	}
+	else {
+		darr+=test;
+	}
+	populateCal(num, darr, arrClass);
+});
+
+$("input[name=class]").click(function(e){
+	num = parseInt($(this).attr('value'));
+	populateCal(num, darr, arrClass);
+});
+
 function addCourse(){
 	//var thisparent = $("#class-li-"+counter);
 	var ggval = document.getElementById("classInput").value.toUpperCase();
@@ -210,7 +226,8 @@ function populateCal(num, darr, array){
 		{time:num,days:darr,"courselist[]":array},
 		function(result){
 			for(var key in result){
-				if(key == 1){
+					//alert(result);
+				if(key == 0){
 					for(var c in result[key]){
 						var tr = $(document.createElement('tr'));
 						var html = "<td colspan=7><b>"+result[key][c]["class_id"]+"</b> "+result[key][c]["title"]+"</td>";

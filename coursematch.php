@@ -73,7 +73,7 @@ while(!empty($queue)){
 						foreach($con1 as $elem1) { $newArr[] = $elem1; }
 						foreach($con2 as $elem2) { $newArr[] = $elem2; }
 						$newIteration = array($newArr);
-						array_push($queue, $newIteration);
+						$queue[]=$newIteration;
 						$iterations[$index]++;
 					}
 				}
@@ -96,7 +96,7 @@ return $masterarr;
 
 }
 
-//print_r(coursematch(array("CSCI-170","CSCI-104L","MATH-225"),$conn));
+//print_r(coursematch(array("CSCI-170"),0,"",$conn));
 
 
 ?>
