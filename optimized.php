@@ -1,5 +1,7 @@
 <?php
 
+set_time_limit(0);
+
 header('Content-Type: application/json');
 
 include 'func/db.php';
@@ -19,6 +21,7 @@ foreach($coursematch as $key => $possibility){
 		$queue[$key][]=array(
 			"id" => $s->id,
 			"class_id" => $s->class_id,
+			"title" => $s->title,
 			"type" => $s->type,
 			"section" => $s->section,
 			"time_start" => $s->time_start,
@@ -27,6 +30,8 @@ foreach($coursematch as $key => $possibility){
 			"instructor" => $s->instructor,
 			"room" => $s->room,
 			"units" => $s->units,
+			"top" => ($s->time_start == "") ? 0 : (convertToMin($s->time_start)/60-6)*50,
+			"size" => (strtotime($s->time_end)-strtotime($s->time_start))/60/60*50,
 			"color" => $colorarr[array_search($s->class_id,$courselist)]
 		);
 	}

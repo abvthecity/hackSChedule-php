@@ -321,6 +321,10 @@ ul#dynamicInput > li {
 	border:1px solid #CCC;
 }
 
+#coursetable > table tr:not():nth-child(2n+3){
+	background-color:#EEE;
+}
+
 #coursetable > table tr > * {
 	padding:4px 8px;
 }

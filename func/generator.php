@@ -38,6 +38,7 @@ function checkConflict($t1_start,$t1_end,$t2_start,$t2_end){
 class Section {
 	public $id;
 	public $class_id;
+	public $title;
 	public $type;
 	public $section;
 	public $time_start;
@@ -61,6 +62,13 @@ class Section {
 		
 		return 0;
 	}
+
+	/*public function compactScore($s){
+		if($this->conflictBool($s)) return -1;
+
+		if(strtotime($this->time_start) > strtotime($s->time_end))
+		else if(strtotime($this->time_start))
+	}*/
 }
 
 function generator($class,$conn){
@@ -92,6 +100,7 @@ if($result->num_rows > 0){
 		$result2 = $conn->query("SELECT * FROM classes WHERE course='$class'");
 		while($row2 = $result2->fetch_assoc()){
 			$obj->units = $row2["units"];
+			$obj->title = $row2["title"];
 		}
 		$type[] = $obj->type;
 		$id[] = $obj->id;

@@ -6,12 +6,12 @@ include 'func/db.php';
 include 'func/generator.php';
 include 'coursematch.php';
 
-$courselist = array("CSCI-170","CSCI-104L","MATH-225","MATH-226");
+$courselist = array("BUAD-306","BUAD-302","PHYS-151Lg","CSCI-270");
 
 $coursematch = coursematch($courselist, $conn);
 
 $colorarr = array("EF5350","AB47BC","5C6BC0","039BE5","009688","689F38","EF6C00","795548","EC407A");
-$golden = $coursematch[20][0];
+$golden = $coursematch[5][0];
 //print_r($golden);
 
 $queue = array("U" => array(), "M" => array(), "T" => array(), "W" => array(), "H" => array(), "F" => array(), "S" => array(), "A" => array());
